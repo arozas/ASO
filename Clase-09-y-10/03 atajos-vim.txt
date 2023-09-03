@@ -1,0 +1,133 @@
+#http://www.sromero.org/wiki/linux/aplicaciones/manual_vim
+
+#------ Desde la consola ------#
+vim 	abre vim
+
+#Crear/abrir un archivo
+vim NombreArchivo
+
+#Encriptar un archivo
+vim -x NombreArchivo
+
+#------ Dentro de vim --------#
+#si ejecutaste vim sin abrir ningun archivo y queres crear o abrir uno..
+:open NombreArchivo
+
+[Esc] 		    #Modo Comando
+:w		        #Graba el archivo
+:w un_archivo	#Graba el archivo con el nombre "un_archivo"
+:q		        #Sale
+:q!		        #Fuerza la salida (si se habia modificado no queda nada guardado)
+:wq		        #Graba y sale
+:x		        #Idem ... graba y sale
+
+
+#Ayuda dentro de vim
+:help
+:help i	muestra la ayuda del comando de vim  "i" (insert)
+
+#moverse en un documento
+gg	  mueve el cursor al comienzo de la primer linea (1,1)
+G	  mueve el cursor al comienzo de la ultima linea
+:5 	  mueve el cursor a la lina 5
+^	  mueve el cursor al comienzo de la linea
+$	  mueve el cursor al final de la linea
+
+#Busqueda
+/ 	  busqueda de string (/palabra [enter]) 
+#	  busca la palabra donde esta el cursor
+n	  Moverse a la proxima palabra encontrada de la busqueda
+N	  Moverse a la palabra previa encontrada de la busqueda
+
+#modos insercion
+i 	inserta donde esta el cursor
+I 	inserta al comienzo de la linea
+A 	inserta al final de la linea
+
+#Cortar "x"  solo un caracter
+x	corta el caracter donde esta el cursor (simil [del])
+X	corta el caracter Anterior de donde esta el cursor (simil [backspace])
+
+#Cortar "d" (acepta combinaciones)
+dd 	Corta una linea
+d2d	Corta 2 lineas
+dw	Corta una palabra
+D	corta desde donde esta el cursor hasta el final de la linea
+d$	idem al anterior
+d^	corta desde donde esta el cursor al principio de la linea
+dG	corta desde la lina donde esta el cursor hasta el final del archivo
+
+#Copiar "y" (acepta mismas combinaciones que "d")
+yy	copia la linea donde estoy parado
+y4y	copia 4 lineas
+yw	copia una palabra
+
+#Reemplazar "r" o "R"
+r	Reemplaza 1 solo caracter
+R	Reemplaza caracteres indefinidamente
+
+
+P	pega lo que esta en el buffer, Antes de la ubicacion del cursor
+p	pega lo que este en el buffer, Despues de la ubicacion del cursor
+u	Deshace ultima operacion (undo)
+.	Repite ultima operacion
+
+
+#Uso del comando sed dentro de vim
+:s/foo/bar/g		  cambia "foo" por "bar" en la linea donde esta el cursor
+:%s/hola/chau/g		cambia "hola" por "chau" en todo el archivo
+:5,12s/foo/bar/g	cambia "foo" por "bar" entre las lineas 5 a 12 inclusive
+
+
+#---- Otros extras ----#
+
+#Ejecucion de comandos sin salir de vim Ejemplo:(!comando)
+:!ls			          #Ejecuta el comando ls y muestra la salida
+:!dmesg | tail -n 3	#Muestra las ultimas 3 lineas del control kernel
+:r!echo $USER		    #Agrega al archivo (en la linea debajo del cursor) la salida del comando
+
+#--- splits ----#
+:split			      #split horizontal [crtl+ws]
+:vsplit			      #split vertical 	 [crtl+wv]
+[crtl+wq]		      #cierra split donde esta parado
+[crtl+w flechita]	#moverse entre split
+
+#Compara archivos (equivalente a ejecutar desde la consola: vimdiff archivo1 archivo2)
+:diffthis   #Habilita "diff" en el archivo abierto en el split (hay que habilitar en ambos archivos)
+
+
+#Modo visual
+v 		#Cambia a modo visual(permite pintar texto y aplicar cualquiera de los comandos de arriba)
+
+
+#Seteos 
+:set num		        #muestra numeros de linea
+:set relativenumber	#muestra numeracion relativa de lineas (arriba y abajo) de donde esta el cursor
+:set ts=2		        #cambia el tabulado por defecto a 2 tab
+:set cursorcolumn	  #resalta columna del cursor
+:set cursorline		  #resalta linea donde esta el cursor
+
+
+#--- Para hacer persistente los seteos de arriba, copien y pegen en la consola ---#
+#--- se creara el archivo .vimrc en el home del usuario con dicho contenido)
+
+cat << EOF > $HOME/.vimrc
+"Seteos de Configuracion de vim para el Usuario
+
+"Seteos para todo archivo
+set cursorcolumn		"Visualiza columna del cursor
+set cursorline			"Visualiza linea del cursor
+set number					"Muestra Nro de linea del cursor
+set relativenumber	"Muestra Nros de linea relativos al cursor	
+set ts=3						"Establece 3 espacios por tab
+
+"Seteos segun tipo de archivo
+autocmd FileType yaml setlocal ai ts=2 sw=2 et
+autocmd FileType sh setlocal ai ts=2 sw=2 et
+autocmd FileType text setlocal ai ts=2 sw=2 et nocuc nocul nonu nornu
+EOF
+
+#----------------------------------------------------------------------------------#
+
+
+

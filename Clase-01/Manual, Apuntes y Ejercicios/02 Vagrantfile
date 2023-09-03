@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+
+  config.vm.define "primero" do |serv12db|
+      serv12db.vm.box = "ubuntu/focal64"
+      serv12db.vm.hostname = "serv12-db"
+      serv12db.vm.network "private_network", :name => 'vboxnet0', ip: "192.168.10.234"
+      serv12db.vm.provision "shell", inline: <<-SHELL
+      sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+      sudo systemctl restart sshd
+      SHELL
+      serv12db.vm.provider "virtualbox" do |vb|
+        vb.memory = "1024"
+        vb.name = "serv12-db"
+        vb.cpus = 2
+        vb.linked_clone = true
+      end
+  end
+  config.vm.define :segundo do |serv19db|
+      serv19db.vm.box = "generic/rhel8"
+      serv19db.vm.hostname = "serv19-db"
+      serv19db.vm.network "private_network", :name => 'vboxnet0', ip: "192.168.10.235"     
+      serv19db.vm.provision "shell", inline: <<-SHELL
+      sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+      sudo systemctl restart sshd
+      SHELL
+
+      serv19db.vm.provider "virtualbox" do |vb2|
+        vb2.memory = "1024"
+        vb2.name = "serv19-db"
+        vb2.cpus = 2
+        vb2.linked_clone = true
+      end
+  end
+end
